@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Document</title>
+        <style>
+            @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@100;300;400;500;600;700&display=swap');
+
+            * {
+                margin: 0;
+                padding: 0;
+                box-sizing: border-box;
+                font-family: 'Poppins', sans-serif;
+            }
+
+            html,
+            body {
+                min-height: 300vh;
+                max-width: 100vw;
+            }
+
+            body {
+                --sb-track-color: #232e33;
+                --sb-thumb-color: #3fe9ff;
+                --sb-size: 5px;
+            }
+
+            body::-webkit-scrollbar {
+                width: var(--sb-size)
+            }
+
+            body::-webkit-scrollbar-track {
+                background: var(--sb-track-color);
+                border-radius: 4px;
+            }
+
+            body::-webkit-scrollbar-thumb {
+                background: var(--sb-thumb-color);
+                border-radius: 4px;
+
+            }
+
+            @supports not selector(::-webkit-scrollbar) {
+                body {
+                    scrollbar-color: var(--sb-thumb-color) var(--sb-track-color);
+                }
+            }
+
+            /* div {
+                position: sticky;
+                border-radius: 8px;
+                background-color: #232323;
+                color: #ccc;
+                text-align: center;
+                margin-top: 6px;
+                padding: 10px;
+            } */
+
+            #sticky1 {
+                top: 10px;
+            }
+
+            #sticky2 {
+                display: inline-block;
+                left: 10px;
+                background: #000;
+            }
+
+            .parent {
+                width: 800px;
+                height: 100%;
+                background: #252525;
+                border-radius: 6px;
+                padding: 7px;
+                position: relative;
+                font-size: 8px;
+                width: 80vw;
+                /* min-width: 600px; */
+                max-width: 400px;
+            }
+
+            .child {
+                width: 60px;
+                height: 60px;
+                background: #ff9148;
+                display: inline-block;
+                border-radius: 6px;
+                padding: 7px;
+                font-size: 2em;
+                font-size: 2rem;
+                font-size: 2vw;
+            }
+
+            /* #c3{
+                position: absolute;
+                background-color: #888;
+                z-index: -2;
+            } */
+        </style>
+    </head>
+
+    <body>
+        <!-- <h2>Lorem ipsum dolor sit amet consectetur, adipisicing elit. Vitae commodi, sed quasi amet quam odio quidem
+
+            vero maxime beatae ullam pariatur impedit tenetur harum et obcaecati nulla id aut doloribus! Beatae
+            aspernatur harum illo sapiente sequi accusantium voluptates voluptatibus iure, nemo ex. A ea vero ex quam
+            molestiae officiis odio laborum totam sunt amet, explicabo sed cumque est adipisci neque?Lorem ipsum dolor
+            sit amet consectetur adipisicing elit. Animi alias minus explicabo obcaecati quam. Impedit eius nesciunt
+            quod maxime corporis?</h2>
+
+        <div id="sticky1">
+            <h3>STICKY TOP</h3>
+        </div>
+        
+        <div id="sticky2">
+            <h3>STICKY LEFT</h3>
+        </div>
+
+        <h2>Lorem ipsum dolor, sit amet consectetur adipisicing elit. Eos unde, dolore sint quaerat deleniti soluta
+            quasi suscipit optio nisi autem a, sit voluptatem. Nam molestiae modi corrupti quam rerum rem, accusamus
+            nulla reprehenderit doloremque cum! Officia, eaque? Laudantium culpa quo omnis veritatis molestias aliquid
+            molestiae minus corrupti ab provident suscipit cum vitae sit, inventore ut maxime labore consequatur, odio
+            ullam praesentium tempora! Totam laborum reiciendis dicta veritatis tenetur iusto magnam quia dolor
+            blanditiis, eligendi facilis nobis provident! Temporibus, quisquam ducimus. Lorem ipsum dolor sit, amet
+            consectetur adipisicing elit. Consectetur blanditiis nesciunt dolores nulla natus atque repellendus ratione
+            non dicta eveniet cumque adipisci deleniti rerum, illum distinctio tempora consequuntur voluptates totam
+            dolorum temporibus nam quae accusamus eum. Asperiores, similique eligendi quisquam provident ipsa sunt at
+            quia veniam magni culpa, quo autem voluptatem mollitia, tenetur quis. Ipsam, iste. Molestias nihil illum
+            atque maxime ipsum! Ipsum vero ipsam adipisci commodi. Hic, fuga earum! Ex ullam neque harum, iusto
+            provident deserunt similique unde cum nobis quidem perspiciatis adipisci praesentium fugit laboriosam,
+            corrupti iste possimus voluptatibus culpa dolor rem accusantium architecto et? Quod eius totam sed aperiam,
+            impedit corrupti culpa vero dolor provident consectetur sunt iste reiciendis recusandae perferendis atque
+            asperiores repellendus nulla dolorum? Veniam voluptates tempore quae quibusdam voluptatum dolore nemo
+            dolorum quidem asperiores, aperiam inventore dicta ex nihil corrupti earum, temporibus vel natus laboriosam
+            eaque, optio laudantium. Incidunt tenetur id dolores dignissimos beatae odit commodi quas? Quibusdam
+            veritatis quod beatae placeat commodi odit laboriosam ad optio molestiae debitis, provident perferendis
+            voluptate iste cupiditate. Quia iure earum autem temporibus, doloribus similique incidunt, laborum
+            laudantium dolorem quas sed repellat dignissimos recusandae veritatis! Eum sed necessitatibus repellat,
+            tempora enim quia sunt aliquam, reiciendis accusamus, culpa dolore? Omnis, mollitia. Voluptatum ipsa ut
+            explicabo quisquam totam voluptate accusamus eligendi maxime corporis iusto, quos deleniti ipsam numquam
+            sint nemo. Expedita enim sed maiores quam ad nihil labore laudantium quaerat quisquam fugit, aperiam
+            inventore ipsam animi ipsa ducimus dolore harum ex, perspiciatis dicta facilis dolorum! Itaque, cumque
+            maxime dolores laborum nisi voluptas molestiae placeat quia eius in inventore quas! Minima architecto,
+            officiis, reprehenderit molestiae eveniet eligendi delectus tempora omnis, est minus voluptatem suscipit!
+            Facilis molestiae libero exercitationem ut nihil voluptas quod laboriosam error necessitatibus praesentium
+            fuga velit fugit, maxime quibusdam amet voluptatibus, voluptatum ratione debitis possimus in sed beatae
+            asperiores.</h2> -->
+
+
+        <div class="parent">
+            <div class="child" id="c1">c1</div>
+            <div class="child" id="c2">c2</div>
+            <div class="child" id="c3">c3</div>
+            <div class="child" id="c4">c4</div>
+            <div class="child" id="c5">c5</div>
+        </div>
+    </body>
+
+</html>

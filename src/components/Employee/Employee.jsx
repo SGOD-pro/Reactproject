@@ -7,7 +7,9 @@ function Employee() {
     const [visibility, setVisibility] = useState('none')
     return (
         <>
+
             <Navbar2 name={['Add Employee']} to={['/employee']} />
+            
             <div className='h-full w-full gap-5 pt-2 dark:text-zinc-200 relative'>
                 <header className='flex justify-between items-center'>
                     <div className="flex gap-3">
@@ -25,6 +27,7 @@ function Employee() {
                     </div>
                     <button to='/employee/add-emp' className='bg-blue-600 rounded-md text-lg px-3 py-1 flex items-center gap-1' onClick={() => { setVisibility('block') }}>Add New <IoIosArrowDown className='text-xl' /></button>
                 </header>
+
                 <table className='w-full bg-zinc-600 mt-5 rounded-lg text-left p-6 overflow-hidden'>
                     <thead className='rounded-lg bg-zinc-900'>
                         <tr className='uppercase'>
@@ -34,7 +37,7 @@ function Employee() {
                             <th className='p-3 font-light'>deg</th>
                             <th className='p-3 font-light'>gender</th>
                             <th className='p-3 font-light'>status</th>
-                            <th className='p-3 font-light'>doj</th>
+                            <th className='p-3 font-light'>dob</th>
                         </tr>
                     </thead>
                     <tbody className=''>
@@ -112,8 +115,8 @@ function Employee() {
                         </tr>
                     </tbody>
                 </table>
-                <div className="flex items-center justify-between mt-2 px-4">
 
+                <div className="flex items-center justify-between mt-2 px-4">
                     <div className="flex gap-5 ">
                         <div className="flex gap-2 ">
                             <label htmlFor="page">Row per Page</label>
@@ -134,6 +137,7 @@ function Employee() {
                         <button className={`p-1 text-center`}><IoIosArrowDropright /></button>
                     </div>
                 </div>
+
                 {visibility && <AddEmployee visibility={{ visibility, setVisibility }} />}
             </div>
         </>

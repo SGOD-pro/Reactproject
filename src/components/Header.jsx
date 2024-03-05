@@ -12,8 +12,8 @@ function Header() {
                 <div className='flex items-center gap-1'>
                     <div className="texts text-right">
                         <h4 className='capitalize text-lg leading-none'>Souvik karmakar</h4>
-                        <p className=' text-xs leading-none'>ID: <span>1sd3f1s5v1s35d1s3</span></p>
-                        <h5 className='uppercase text-sm leading-none'>admin</h5>
+                        <p className=' text-xs'>ID: <span>1sd3f1s5v1s35d1s3</span></p>
+                        <h5 className='uppercase text-sm'>admin</h5>
                     </div>
                     <div className=' w-12 h-12 rounded-full overflow-hidden'>
                         <img src='/images/img1.jpeg' alt="" className='w-full h-full object-cover' />
