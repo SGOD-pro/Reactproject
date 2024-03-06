@@ -15,4 +15,4 @@ const overviewDetailsSchema = new mongoose.Schema({
     pan: { type: String }
 });
 
-export const Overview = mongoose.model('SalaryDetails', overviewDetailsSchema);
+export const Overview = mongoose.model('overview', overviewDetailsSchema);

@@ -15,4 +15,4 @@ const joiningSchema = mongoose.Schema({
 
 });
 
-export const Joining = mongoose.model("Employee", joiningSchema)
+export const Joining = mongoose.model("joining", joiningSchema)

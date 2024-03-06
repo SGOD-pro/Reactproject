@@ -15,4 +15,4 @@ router.route('/salary').post(setSalary)
 
 router.route("/getJoinning").get(getJoining)
 router.route("/getOverview").get(getOverview)
-export { router }
+export default  router 
