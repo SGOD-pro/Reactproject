@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { EmployeeRegsiter, setSalary, setJoining, getJoining, getOverview } from "../controller/employee.controller.js";
+import { EmployeeRegsiter, setSalary, setJoining, getJoining, getOverview,fetchEmployeRecords } from "../controller/employee.controller.js";
 import { upload } from "../middlewares/multer.js";
 const router = Router()
 router.route('/register').post(upload.fields(
@@ -15,4 +15,6 @@ router.route('/salary').post(setSalary)
 
 router.route("/getJoinning").get(getJoining)
 router.route("/getOverview").get(getOverview)
+router.route("/table-deitails").get(fetchEmployeRecords)
+
 export default  router 

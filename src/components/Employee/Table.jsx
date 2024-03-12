@@ -3,9 +3,6 @@ import Box from '@mui/material/Box';
 import { DataGrid } from '@mui/x-data-grid';
 import { useEmpData } from '../../context';
 
-
-
-
 export default function DataGridDemo() {
     const columns = [
         {
@@ -49,13 +46,14 @@ export default function DataGridDemo() {
             headerName: 'Designation',
             width: 160,
         },
-    
+
     ];
     const { empTableData } = useEmpData()
+    console.log(empTableData);
     const rows = empTableData;
 
     return (
-        <Box sx={{ height: 400, width: '100%', color: "#f4f4f4" }}>
+        <Box sx={{ height: 400, width: '100%' }}>
             <DataGrid
                 rows={rows}
                 columns={columns}
@@ -70,8 +68,14 @@ export default function DataGridDemo() {
                 checkboxSelection
                 disableRowSelectionOnClick
                 sx={{
-                    color: "#f4f4f4",
+                    '& .MuiToolbar-root': {
+                        color: '#f4f4f4',
+                    },
+                    '& .MuiSvgIcon-root': {
+                        color: '#f4f4f4',
+                    },
                     width: "100%",
+                    color: "#f4f4f4"
                 }}
             />
         </Box>

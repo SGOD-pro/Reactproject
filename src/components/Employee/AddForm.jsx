@@ -1,12 +1,12 @@
 import React, { useEffect, useState, useRef } from 'react'
 import { IoIosCloseCircleOutline } from "react-icons/io";
 import InputField from './InputField';
-import Alert from '../Alert';
 import axios from 'axios';
-import { useAlert, useEmpData } from '../../context'
+import { useEmpData } from '../../context'
+
+import { toast } from 'react-toastify';
 function AddEmployee(props) {
-    const { setAlert } = useAlert()
-    const { empTableData, setEmpTableData } = useEmpData
+    const { pushNewData } = useEmpData()
     const [disabledBtn, setDisabledBtn] = useState(false)
     const { visibility, setVisibility } = props.visibility
     const [fomSubmitted, setFormSubmitted] = useState(false)
@@ -154,8 +154,6 @@ function AddEmployee(props) {
         { name: 'PF_ACCOUNT_no', type: 'number', imp: true, eventChange: handleChange3, readOnly: false }
     ]);
 
-
-
     const fields = [field1, field2, field3]
     const formData = [formData1, formData2, formData3]
     const setXAxis = (index) => {
@@ -164,32 +162,63 @@ function AddEmployee(props) {
         setTranslatex(-1 * width)
     }
     const [translatex, setTranslatex] = useState(0)
+    const [tableData, setTableData] = useState({})
 
-    const [tableData, setTableData] = useState(null)
     const onSubmit1 = (e) => {
         e.preventDefault();
 
         if (!formData1['gender'] || formData1['gender'] === "") {
             setDisabledBtn(false);
-            setAlert(400, "Gender Required.");
+            toast.error("Gender is required", {
+                position: "top-right",
+                autoClose: 5000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                theme: "dark",
+            });
             return;
         }
         let addhar = document.getElementById("addhar")
         let pan = document.getElementById("pan")
-        console.log(addhar);
-        console.log(pan);
+        console.log(addhar.files[0]);
+        console.log(pan.files[0]);
 
         setDisabledBtn(true);
-
+        console.log(formData1);
         axios.post("/api/employee/register", formData1)
             .then((response) => {
-                setDisabledBtn(false);
                 const responseData = response.data;
-                setAlert(response.data.statusCode, response.data.message);
                 if (!responseData.success) {
+                    toast.error(responseData.message, {
+                        position: "top-right",
+                        autoClose: 5000,
+                        hideProgressBar: false,
+                        closeOnClick: true,
+                        pauseOnHover: true,
+                        draggable: true,
+                        progress: undefined,
+                        theme: "dark",
+                    });
                     return;
                 }
-                setTableData(responseData.data)
+                setDisabledBtn(false);
+                toast.success(responseData.message, {
+                    position: "top-right",
+                    autoClose: 5000,
+                    hideProgressBar: false,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
+                    progress: undefined,
+                    theme: "dark",
+                });
+
+                const data = responseData.data
+                console.log(data);
+                setTableData(data)
                 const updatedField = readOnlyTrue(field1);
                 setField1(updatedField);
                 localStorage.setItem("empId", responseData.data.empId);
@@ -199,7 +228,17 @@ function AddEmployee(props) {
             .catch(error => {
                 console.error("Error:", error);
                 setDisabledBtn(false);
-                setAlert(401, "Couldn't save");
+                toast.error("Server is not responding", {
+                    position: "top-right",
+                    autoClose: 5000,
+                    hideProgressBar: false,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
+                    progress: undefined,
+                    theme: "dark",
+                });
+
             });
     };
 
@@ -207,14 +246,31 @@ function AddEmployee(props) {
         e.preventDefault();
 
         if (!formData2['department'] || !formData2['designation'] || !formData2['default_shift']) {
-            setAlert(401, "Some field is missing");
+            toast.error("Some field is missing", {
+                position: "top-right",
+                autoClose: 5000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                theme: "dark",
+            });
             return;
         }
 
         const empId = localStorage.getItem("empId");
         if (!empId) {
-            setAlert(404, "Employee id not found.");
-            console.log("Empid not found..");
+            toast.error("Emp Id not found.", {
+                position: "top-right",
+                autoClose: 5000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                theme: "dark",
+            });
             return;
         }
 
@@ -223,19 +279,35 @@ function AddEmployee(props) {
         const data = { ...formData2, empId };
         console.log(data);
 
-        let pan = document.getElementById("profile_picture")
-        console.log(pan.value);
-        console.log(data.profile_picture);
-        data.profile_picture = pan.value
-        console.log(data.profile_picture);
         axios.post(`/api/employee/joining`, data)
             .then((response) => {
                 setDisabledBtn(false);
                 const responseData = response.data;
-                setAlert(response.data.statusCode, response.data.message);
                 if (!responseData.success) {
+                    toast.error(responseData.message, {
+                        position: "top-right",
+                        autoClose: 5000,
+                        hideProgressBar: false,
+                        closeOnClick: true,
+                        pauseOnHover: true,
+                        draggable: true,
+                        progress: undefined,
+                        theme: "dark",
+                    });
                     return;
                 }
+                toast.success(responseData.message, {
+                    position: "top-right",
+                    autoClose: 5000,
+                    hideProgressBar: false,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
+                    progress: undefined,
+                    theme: "dark",
+                });
+
+                console.log(responseData.data);
                 setTableData(prev => ({ ...prev, ...responseData.data }))
                 console.log(tableData);
                 const updatedField = readOnlyTrue(field2);
@@ -247,7 +319,17 @@ function AddEmployee(props) {
             .catch(error => {
                 console.error("Error:", error);
                 setDisabledBtn(false);
-                setAlert(401, "Couldn't save.....");
+                toast.error("Server is not responding", {
+                    position: "top-right",
+                    autoClose: 5000,
+                    hideProgressBar: false,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
+                    progress: undefined,
+                    theme: "dark",
+                });
+
             });
     };
 
@@ -255,7 +337,16 @@ function AddEmployee(props) {
         e.preventDefault();
         const empId = localStorage.getItem("empId");
         if (!empId) {
-            setAlert(404, "Employee id not found.");
+            toast.error("Emp Id not found.", {
+                position: "top-right",
+                autoClose: 5000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                theme: "dark",
+            });
             return;
         }
         setDisabledBtn(true);
@@ -264,19 +355,49 @@ function AddEmployee(props) {
             .then((response) => {
                 setDisabledBtn(false);
                 const responseData = response.data;
-                setAlert(responseData.statusCode, responseData.message);
                 if (!responseData.success) {
+                    toast.error(responseData.message, {
+                        position: "top-right",
+                        autoClose: 5000,
+                        hideProgressBar: false,
+                        closeOnClick: true,
+                        pauseOnHover: true,
+                        draggable: true,
+                        progress: undefined,
+                        theme: "dark",
+                    });
                     return;
                 }
                 setFormSubmitted(true);
+                console.log(tableData);
+                pushNewData(tableData)
                 localStorage.removeItem("empId");
                 localStorage.removeItem("date_of_joining");
                 activeHandeler(0)
                 setXAxis(0)
+                toast.success(responseData.message, {
+                    position: "top-right",
+                    autoClose: 5000,
+                    hideProgressBar: false,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
+                    progress: undefined,
+                    theme: "dark",
+                });
             })
             .catch((error) => {
                 console.error("Error:", error);
-                setAlert(401, "Couldn't save.");
+                toast.error("Server is not responding", {
+                    position: "top-right",
+                    autoClose: 5000,
+                    hideProgressBar: false,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
+                    progress: undefined,
+                    theme: "dark",
+                });
             });
     };
 
@@ -342,13 +463,25 @@ function AddEmployee(props) {
     useEffect(() => {
         const empId = localStorage.getItem("empId")
         if (empId) {
-            const updatedField = readOnlyTrue(field1)
-            setField1(updatedField)
             axios.get(`/api/employee/getOverview?empId=${empId}`)
                 .then(responce => {
                     console.log(responce.data);
+                    const updatedField = readOnlyTrue(field1)
+                    setField1(updatedField)
                     if (!responce.data.success) {
-                        setAlert(responce.data.statusCode, responce.data.message)
+                        if (!empId) {
+                            toast.error(responce.data.message, {
+                                position: "top-right",
+                                autoClose: 5000,
+                                hideProgressBar: false,
+                                closeOnClick: true,
+                                pauseOnHover: true,
+                                draggable: true,
+                                progress: undefined,
+                                theme: "dark",
+                            });
+                            return;
+                        }
                         return;
                     }
                     const x = responce.data.data
@@ -365,7 +498,16 @@ function AddEmployee(props) {
             axios.get(`/api/employee/getJoinning?empId=${empId}`).then(responce => {
 
                 if (!responce.data.success) {
-                    setAlert(responce.data.statusCode, responce.data.message)
+                    toast.error(responseData.message, {
+                        position: "top-right",
+                        autoClose: 5000,
+                        hideProgressBar: false,
+                        closeOnClick: true,
+                        pauseOnHover: true,
+                        draggable: true,
+                        progress: undefined,
+                        theme: "dark",
+                    });
                     return;
                 }
                 const x = responce.data.data

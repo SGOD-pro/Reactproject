@@ -19,9 +19,11 @@ const EmployeeRegsiter = asyncHandler(async (req, res) => {
             }
         });
 
+        console.log(req.files);
         const empId = generateUniqueId()
         const addharPath = req.files?.addhar[0]?.path;
         const panPath = req.files?.pan[0]?.path;
+
         console.log(addharPath);
         console.log(panPath);
 
@@ -43,11 +45,39 @@ const EmployeeRegsiter = asyncHandler(async (req, res) => {
             empId
         })
 
-        const CreatedUser = await Overview.findById(user._id).select("-postal_Code -address -email -whatsappNo -addhar -pan -date_of_birth")
+        const CreatedUser = await Overview.aggregate(
+            [
+                {
+                    $match: {
+                        _id: user._id,
+                    },
+                },
+                {
+                    $addFields: {
+                        id: "$_id"
+                    }
+                },
+                {
+                    $project: {
+                        first_Name: 1,
+                        last_Name: 1,
+                        middle_Name: 1,
+                        empId: 1,
+                        gender: 1,
+                        id: 1
+                    },
+                },
+            ]
+        )
+
+        console.log(CreatedUser);
         if (!CreatedUser) {
             throw new ApiErrors(500, "Some internal error occurs.")
         }
-        res.status(200).json(new ApiResponce(200, CreatedUser, "Employee Successfully registered."))
+
+
+        console.log(CreatedUser);
+        res.status(200).json(new ApiResponce(200, CreatedUser[0], "Employee Successfully registered."))
     } catch (error) {
         console.log(error);
         if (error instanceof ApiErrors) {
@@ -59,7 +89,6 @@ const EmployeeRegsiter = asyncHandler(async (req, res) => {
 })
 
 const setJoining = asyncHandler(async (req, res) => {
-
     try {
         const { date_of_joining, branch, department, designation, reports_to, default_shift, geo_fence = null, status, empId } = req.body
         console.log(req.body);
@@ -67,19 +96,20 @@ const setJoining = asyncHandler(async (req, res) => {
             throw new ApiErrors(400, "Fill up properly")
         }
         console.log("files", req.file);
-        const profilePicturePath = req.files?.profile_picture[0]?.path
+        const profilePicturePath = req.file?.path
         let profileURL;
-        if (!profilePicturePath) {
-            throw new ApiErrors(401, "pic required.")
+        if (profilePicturePath) {
+            // throw new ApiErrors(401, "pic required.")
             profileURL = await cloudinaryUpload(profilePicturePath)
         }
+        console.log(profileURL);
         const empJoining = await Joining.create({
             date_of_joining, branch, department, designation, reports_to: reports_to || "", default_shift, geo_fence: geo_fence || "", status, empId, profile_picture: profileURL?.url || ""
         })
         if (!empJoining) {
             throw new ApiErrors(500, "Some internal error occurs.Try again later.")
         }
-        const responce = await Joining.findById(empJoining).select("-branch, -reports_to, -geo_fence -default_shift -status -empId")
+        const responce = await Joining.findById(empJoining).select("-branch -reports_to -geo_fence -default_shift -status -empId -profile_picture")
         res.status(200).json(new ApiResponce(200, responce, "Joining saved."))
     } catch (error) {
         console.log(error);
@@ -155,4 +185,63 @@ const getJoining = asyncHandler(async (req, res) => {
         }
     }
 })
-export { EmployeeRegsiter, setSalary, setJoining, getJoining, getOverview }
+
+const fetchEmployeRecords = asyncHandler(async (req, res) => {
+
+    try {
+        const responce = await Overview.aggregate([
+            {
+                $lookup: {
+                    from: "joinings",
+                    localField: "empId",
+                    foreignField: "empId",
+                    as: "joiningDetails",
+                    pipeline: [
+                        {
+                            $project: {
+                                date_of_joining: 1,
+                                active: 1,
+                                department: 1,
+                                designation: 1,
+                            }
+                        }
+                    ]
+                },
+            },
+            {
+                $addFields: {
+                    date_of_joining: { $first: "$joiningDetails.date_of_joining" },
+                    department: { $first: "$joiningDetails.department" },
+                    designation: { $first: "$joiningDetails.designation" }
+                }
+            },
+            {
+                $project: {
+                    id: "$_id",
+                    empId: 1,
+                    first_Name: 1,
+                    last_Name: 1,
+                    middle_Name: 1,
+                    gender: 1,
+                    date_of_joining: 1,
+                    department: 1,
+                    designation: 1,
+                    _id: 0,
+                }
+            }
+        ])
+
+        if (!responce) {
+            throw new ApiErrors(404, "No Data found.")
+        }
+        res.status(200).json(new ApiResponce(200, responce, "Fetched Successfully."))
+    } catch (error) {
+        if (error instanceof ApiErrors) {
+            res.status(error.statusCode).json({ error: error.message });
+        } else {
+            res.status(500).json({ error: "Internal server error." });
+        }
+    }
+})
+
+export { EmployeeRegsiter, setSalary, setJoining, getJoining, getOverview, fetchEmployeRecords }

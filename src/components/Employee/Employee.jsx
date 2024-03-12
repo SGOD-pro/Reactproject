@@ -8,7 +8,6 @@ function Employee() {
     const [visibility, setVisibility] = useState('none')
     return (
         <>
-
             <Navbar2 name={['Add Employee']} to={['/employee']} />
             
             <div className='h-full w-full gap-5 pt-2 dark:text-zinc-200 relative'>

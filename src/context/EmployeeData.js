@@ -12,7 +12,7 @@ export const DataContext = createContext({
         department: "",
         designation: ""
     }],
-    setEmpTableData: () => { }
+    pushNewData: (obj) => { }
 })
 
 export const DataContextProvider = DataContext.Provider

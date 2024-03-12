@@ -15,11 +15,10 @@ const cloudinaryUpload = async (filePath) => {
         console.log(filePath);
         const responce = await cloudinary.uploader.upload(filePath,
             { resource_type: "auto" });
-        console.log(responce);
-        fs.unlinkSync(filePath)
+        //fs.unlinkSync(filePath)
         return responce;
     } catch (error) {
-        fs.unlinkSync(filePath)
+        //fs.unlinkSync(filePath)
         throw new ApiErrors(500, "Faild to upload images.");
     }
 }

@@ -8,16 +8,19 @@ app.use(cors({
     credentials: true
 }))
 
-app.use(express.urlencoded({ extended: true }))
 app.use(express.json())
+app.use(express.urlencoded({ extended: true }))
 app.use(cookieParser())
 app.use(express.static('./public'))
-// Routes
 
+
+
+// Routes
 import employee from './routes/employee.routes.js'
-import details from './routes/getEmployeeDetails.routes.js'
+import timeAttendence from './routes/time_Attendence.routes.js'
+
 
 app.use('/api/employee', employee)
-app.use('/api/details', details)
+app.use('/api/timeAtt', timeAttendence)
 
 export { app }
