@@ -35,6 +35,7 @@ const fetchEmployeRecords = asyncHandler(async (req, res) => {
             },
             {
                 $project: {
+                    id: "$_id",
                     empId: 1,
                     first_Name: 1,
                     last_Name: 1,
@@ -42,7 +43,8 @@ const fetchEmployeRecords = asyncHandler(async (req, res) => {
                     gender: 1,
                     date_of_joining: 1,
                     department: 1,
-                    designation: 1
+                    designation: 1,
+                    _id: 0,
                 }
             }
         ])
@@ -50,6 +52,7 @@ const fetchEmployeRecords = asyncHandler(async (req, res) => {
         if (!responce) {
             throw new ApiErrors(404, "No Data found.")
         }
+        
         console.log(responce);
         res.status(200).json(new ApiResponce(200, responce, "Fetched Successfully."))
     } catch (error) {

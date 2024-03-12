@@ -1,7 +1,7 @@
 import React from 'react';
 
 function InputField({ params, formData }) {
-    const { name, type, imp, accept, eventChange, readOnly, filedvalue } = params;
+    const { name, type, imp, accept, eventChange, readOnly } = params;
 
     return (
         <div className="rounded-md border-2 relative border-blue-500 w-full flex py-2 text-base ">
@@ -32,8 +32,8 @@ function InputField({ params, formData }) {
                             eventChange(e);
                         }} 
                         required={imp} disabled={readOnly} />
-                    <label htmlFor="" className=' absolute top-1/2 -translate-y-1/2 px-2'>{formData[name] ? formData[name] : ""}</label>
-                    <label htmlFor={name} className=' absolute rounded-full  bg-zinc-600 px-2 top-1/2 -translate-y-1/2 right-0'>Choose File</label>
+                    <p htmlFor="" className=' absolute top-1/2 -translate-y-1/2 px-2 whitespace-nowrap overflow-hidden text-ellipsis w-full text'>{formData[name] ? formData[name].name : ""}</p>
+                    <label htmlFor={name} className=' absolute rounded-full text-xs  bg-zinc-600 px-2 top-4 -translate-y-1/2 right-0'>Choose File</label>
                 </>
             }
             {type === 'select' &&

@@ -3,9 +3,10 @@ import { IoIosCloseCircleOutline } from "react-icons/io";
 import InputField from './InputField';
 import Alert from '../Alert';
 import axios from 'axios';
-import { useAlert } from '../../context'
+import { useAlert, useEmpData } from '../../context'
 function AddEmployee(props) {
     const { setAlert } = useAlert()
+    const { empTableData, setEmpTableData } = useEmpData
     const [disabledBtn, setDisabledBtn] = useState(false)
     const { visibility, setVisibility } = props.visibility
     const [fomSubmitted, setFormSubmitted] = useState(false)
@@ -164,7 +165,7 @@ function AddEmployee(props) {
     }
     const [translatex, setTranslatex] = useState(0)
 
-
+    const [tableData, setTableData] = useState(null)
     const onSubmit1 = (e) => {
         e.preventDefault();
 
@@ -173,6 +174,10 @@ function AddEmployee(props) {
             setAlert(400, "Gender Required.");
             return;
         }
+        let addhar = document.getElementById("addhar")
+        let pan = document.getElementById("pan")
+        console.log(addhar);
+        console.log(pan);
 
         setDisabledBtn(true);
 
@@ -184,9 +189,12 @@ function AddEmployee(props) {
                 if (!responseData.success) {
                     return;
                 }
+                setTableData(responseData.data)
                 const updatedField = readOnlyTrue(field1);
                 setField1(updatedField);
                 localStorage.setItem("empId", responseData.data.empId);
+                activeHandeler(1)
+                setXAxis(1)
             })
             .catch(error => {
                 console.error("Error:", error);
@@ -215,23 +223,31 @@ function AddEmployee(props) {
         const data = { ...formData2, empId };
         console.log(data);
 
+        let pan = document.getElementById("profile_picture")
+        console.log(pan.value);
+        console.log(data.profile_picture);
+        data.profile_picture = pan.value
+        console.log(data.profile_picture);
         axios.post(`/api/employee/joining`, data)
             .then((response) => {
                 setDisabledBtn(false);
                 const responseData = response.data;
-                console.log(response.data);
                 setAlert(response.data.statusCode, response.data.message);
                 if (!responseData.success) {
                     return;
                 }
+                setTableData(prev => ({ ...prev, ...responseData.data }))
+                console.log(tableData);
                 const updatedField = readOnlyTrue(field2);
                 setField2(updatedField);
                 localStorage.setItem("date_of_joining", responseData.data.date_of_joining);
+                activeHandeler(2)
+                setXAxis(2)
             })
             .catch(error => {
                 console.error("Error:", error);
                 setDisabledBtn(false);
-                setAlert(401, "Couldn't save");
+                setAlert(401, "Couldn't save.....");
             });
     };
 
@@ -248,7 +264,6 @@ function AddEmployee(props) {
             .then((response) => {
                 setDisabledBtn(false);
                 const responseData = response.data;
-                console.log(response.data);
                 setAlert(responseData.statusCode, responseData.message);
                 if (!responseData.success) {
                     return;
@@ -256,6 +271,8 @@ function AddEmployee(props) {
                 setFormSubmitted(true);
                 localStorage.removeItem("empId");
                 localStorage.removeItem("date_of_joining");
+                activeHandeler(0)
+                setXAxis(0)
             })
             .catch((error) => {
                 console.error("Error:", error);
@@ -307,7 +324,7 @@ function AddEmployee(props) {
                 emailId: "",
                 whatsappNo: "",
                 addhar: "",
-                pan: ""
+                pan: ''
             })
             let updatedField = readOnlyFalse(field1)
             setField1(updatedField)
@@ -363,9 +380,7 @@ function AddEmployee(props) {
 
     return (
         <>
-            <div className="fixed top-20 right-4">
-                {/* <Alert success={false} msg={"Some thing went wrong.."} /> */}
-            </div>
+
 
             <div className=" absolute top-0 left-0 w-full h-full rounded-lg flex items-center justify-center px-2 bg-[#7474740c]" style={{ display: visibility }}>
                 <div className="w-[99.1%] h-full rounded-lg backdrop-blur-[2px] flex items-center justify-center bg-[#3f3f3f3f] py-2">

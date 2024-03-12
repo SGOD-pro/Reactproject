@@ -6,6 +6,7 @@ import { Outlet } from 'react-router-dom'
 import Alert from './components/Alert'
 import { AlertProvider, DataContextProvider } from "./context"
 import axios from 'axios'
+import formatISODate from "../src/utils/DateFormater"
 function App() {
   const alertDiv = useRef(null)
   const [alert, setalert] = useState({})
@@ -35,6 +36,10 @@ function App() {
     axios.get("/api/details/table-deitails")
       .then(response => {
         console.log(response.data.data);
+        const data = response.data.data
+        data.map(item => (item.date_of_joining ? (item.date_of_joining = formatISODate(item.date_of_joining)) : ""))
+        console.log(data); // 'date_of_joining' will be updated in the 'data' object
+
         setEmpTableData(null)
         setEmpTableData(response.data.data)
       }).catch(err => {

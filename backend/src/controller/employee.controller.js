@@ -43,7 +43,7 @@ const EmployeeRegsiter = asyncHandler(async (req, res) => {
             empId
         })
 
-        const CreatedUser = await Overview.findById(user._id).select("-postal_Code -address -email -whatsappNo -addhar -pan")
+        const CreatedUser = await Overview.findById(user._id).select("-postal_Code -address -email -whatsappNo -addhar -pan -date_of_birth")
         if (!CreatedUser) {
             throw new ApiErrors(500, "Some internal error occurs.")
         }
@@ -66,10 +66,11 @@ const setJoining = asyncHandler(async (req, res) => {
         if ([date_of_joining, department, designation, default_shift, empId].some(elem => elem?.trim() === '')) {
             throw new ApiErrors(400, "Fill up properly")
         }
+        console.log("files", req.file);
         const profilePicturePath = req.files?.profile_picture[0]?.path
-        console.log("files",req.files);
         let profileURL;
-        if (profilePicturePath) {
+        if (!profilePicturePath) {
+            throw new ApiErrors(401, "pic required.")
             profileURL = await cloudinaryUpload(profilePicturePath)
         }
         const empJoining = await Joining.create({
@@ -78,7 +79,7 @@ const setJoining = asyncHandler(async (req, res) => {
         if (!empJoining) {
             throw new ApiErrors(500, "Some internal error occurs.Try again later.")
         }
-        const responce = await Joining.findById(empJoining).select("-branch, -reports_to, -geo_fence")
+        const responce = await Joining.findById(empJoining).select("-branch, -reports_to, -geo_fence -default_shift -status -empId")
         res.status(200).json(new ApiResponce(200, responce, "Joining saved."))
     } catch (error) {
         console.log(error);
@@ -139,6 +140,11 @@ const getJoining = asyncHandler(async (req, res) => {
         if (!emp) {
             throw new ApiErrors(404, "Employee not found");
         }
+        const date = new Date(dateString);
+        const options = { year: 'numeric', month: 'long', day: 'numeric' };
+        const formattedDate = date.toLocaleDateString('en-US', options);
+        emp.date_of_joining = formattedDate
+        console.log(emp);
         res.status(200).json(new ApiResponce(200, emp, "Fetched success."))
     } catch (error) {
         console.log(error.message);
