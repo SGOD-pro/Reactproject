@@ -2,9 +2,9 @@ import React, { useEffect, useState, useRef } from 'react'
 import { IoIosCloseCircleOutline } from "react-icons/io";
 import InputField from './InputField';
 import axios from 'axios';
+import { toast } from 'react-toastify';
 import { useEmpData } from '../../context'
 
-import { toast } from 'react-toastify';
 function AddEmployee(props) {
     const { pushNewData } = useEmpData()
     const [disabledBtn, setDisabledBtn] = useState(false)
@@ -136,7 +136,7 @@ function AddEmployee(props) {
         { name: 'department', type: 'select', options: departments, imp: true, eventChange: handleChange2, readOnly: false },
         { name: 'designation', type: 'select', options: designations, imp: true, eventChange: handleChange2, readOnly: false },
         { name: 'reports_to', type: 'select', imp: false, options: ['null'], eventChange: handleChange2, readOnly: true },
-        { name: 'default_shift', type: 'select', options: ["day", 'night'], imp: true, eventChange: handleChange2, readOnly: false },
+        { name: 'default_shift', type: 'select', options:  ["Morning", "Evening", "Night"], imp: true, eventChange: handleChange2, readOnly: false },
         { name: 'geo-fence', type: 'text', imp: false, eventChange: handleChange2, readOnly: false },
         { name: 'status', type: 'text', imp: false, eventChange: handleChange2, readOnly: false },
         { name: 'profile_picture', type: 'file', imp: false, accept: 'image/*', eventChange: handleChange2, readOnly: false }

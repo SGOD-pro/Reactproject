@@ -2,9 +2,10 @@ import React, { useEffect, useState } from 'react'
 import { IoIosCloseCircleOutline } from "react-icons/io";
 import InputField from './InputField';
 import axios from 'axios';
-import { useAlert, useEmpData } from '../../../context'
+import { toast } from 'react-toastify';
+import { useEmpData } from '../../../context'
 function AddForm(props) {
-    const { setAlert } = useAlert()
+
     const [disabledBtn, setDisabledBtn] = useState(false)
     const { visibility, setVisibility } = props.visibility
     const fieldButton = ["new", "other"]
@@ -18,16 +19,55 @@ function AddForm(props) {
         }
         setActive(newActive);
     }
+    const [formData1, setFormData1] = useState({
+        shiftName: '',
+        startTime: '',
+        endTime: '',
+        TSD: '',
+        threshhold_HalfDay: "",
+        minHour_FullDay: "",
+    });
+    const [formData2, setFormData2] = useState({
+        entryGP: '',
+        exitGP: '',
+        checkInBefore: '',
+        checkInAfter: ''
+    });
+    const [time1, settime1] = useState('')
+    const [time2, settime2] = useState('')
+    function differenceTime(time1, time2) {
+        const [hours1, minutes1] = time1.split(':').map(Number);
+        const [hours2, minutes2] = time2.split(':').map(Number);
 
+        let diffHours = hours2 - hours1;
+        let diffMinutes = minutes2 - minutes1;
 
+        if (diffHours < 0 || (diffHours === 0 && diffMinutes < 0)) {
+            diffHours += 24;
+        }
+
+        if (diffMinutes < 0) {
+            diffHours--;
+            diffMinutes += 60;
+        }
+
+        return { diffHours, diffMinutes };
+    }
     const handleChange1 = (e) => {
         const { name, value, type, files } = e.target;
+
+        if (name === "startTime") {
+            settime1(value)
+        }
+        if (name === "endTime") {
+            settime2(value)
+        }
+
         setFormData1(prevState => ({
             ...prevState,
             [name]: type === 'file' ? files[0] : value
         }));
     };
-
 
     const handleChange2 = (e) => {
         const { name, value, type, files } = e.target;
@@ -37,36 +77,48 @@ function AddForm(props) {
         }));
     };
 
+    const toastObj = {
+        position: "top-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "dark",
+    }
+    useEffect(() => {
+        if (time1 !== "" && time2 !== "") {
+            let time = differenceTime(time1, time2)
+            document.getElementById("TSD").innerHTML = `${time.diffHours}:${time.diffMinutes}`
+            if (time.diffHours < 0) {
+                toast.warn('Please Select a valid time', toastObj);
+                setDisabledBtn(true)
+                return;
+            }
+            setDisabledBtn(false)
+            setFormData1(prevState => ({
+                ...prevState,
+                TSD: `${time.diffHours}:${time.diffMinutes}`
+            }));
+        }
+    }, [time1, time2])
 
-    const [formData1, setFormData1] = useState({
-        shiftName: '',
-        startTime: '',
-        endTime: '',
-        TSD: '',
-        threshhold_HalfDay: "",
-        minHour_FullDay: "",
-    });
 
-    const [formData2, setFormData2] = useState({
-        entryGP: '',
-        exitGP: '',
-        checkInBefore: '',
-        checkInAfter: ''
-    });
     const [field1, setField1] = useState([
-        { name: 'shiftName', type: 'text', imp: true, field: 'shift name', placeHolder: "", eventChange: handleChange1 },
+        { name: 'shiftName', type: 'select', options: ["Morning", "Evening", "Night"], imp: true, field: 'shift name', placeHolder: "", eventChange: handleChange1 },
         { name: 'startTime', type: 'time', imp: true, field: 'start time', placeHolder: "", eventChange: handleChange1 },
         { name: 'endTime', type: 'time', imp: true, field: 'end time', placeHolder: "", eventChange: handleChange1 },
-        { name: 'TSD', type: 'time', field: 'total shift duration', placeHolder: "", eventChange: handleChange1 },
-        { name: 'threshhold_HalfDay', type: 'time', field: 'threshold for half day', placeHolder: "", eventChange: handleChange1 },
-        { name: 'minHour_FullDay', type: 'time', field: 'min. hour for full day', placeHolder: "", eventChange: handleChange1 }
+        { name: 'TSD', type: 'time', field: 'total shift duration', placeHolder: "", readOnly: true },
+        { name: 'threshhold_HalfDay', type: 'number', field: 'threshold for half day', placeHolder: "", eventChange: handleChange1 },
+        { name: 'minHour_FullDay', type: 'number', field: 'min. hour for full day', placeHolder: "", eventChange: handleChange1 }
     ]);
 
     const [field2, setField2] = useState([
-        { name: 'entryGP', type: 'time', field: 'entry GP', placeHolder: "", imp: false, eventChange: handleChange2 },
-        { name: 'exitGP', type: 'time', field: 'exit GP', placeHolder: "", imp: false, eventChange: handleChange2 },
-        { name: 'checkInBefore', type: 'time', field: 'check in before shift start time', placeHolder: "", extra: "", imp: false, eventChange: handleChange2 },
-        { name: 'checkInAfter', type: 'time', field: 'check in after shift end time', placeHolder: "", extra: "", imp: false, eventChange: handleChange2 }
+        { name: 'entryGP', type: 'number', field: 'entry GP', placeHolder: "", imp: false, eventChange: handleChange2 },
+        { name: 'exitGP', type: 'number', field: 'exit GP', placeHolder: "", imp: false, eventChange: handleChange2 },
+        { name: 'checkInBefore', type: 'number', field: 'check in before shift start time', placeHolder: "", extra: "", imp: false, eventChange: handleChange2 },
+        { name: 'checkInAfter', type: 'number', field: 'check in after shift end time', placeHolder: "", extra: "", imp: false, eventChange: handleChange2 }
     ]);
 
     const fields = [field1, field2]
@@ -79,9 +131,24 @@ function AddForm(props) {
     const [translatex, setTranslatex] = useState(0)
     const [tableData, setTableData] = useState({})
 
-    const onSubmit1 = (e) => {
+    const { pushShiftTableData } = useEmpData()
+
+    const onSubmit = (e) => {
         e.preventDefault();
-        console.log('Field 1 Data:', formData1);
+        const data = { ...formData1, ...formData2 }
+        console.log(data);
+        if (!formData1.shiftName && formData1.shiftName === "") {
+            toast.warn("Shift Name required.", toastObj)
+            return;
+        }
+        axios.post("/api/timeAtt/setShift", data).then(response => {
+            const responseData = response.data
+            console.log(responseData);
+            if (!responseData.success) {
+                toast.error("Couldn't save", toastObj)
+            }
+            pushShiftTableData(responseData.data)
+        }).catch(err => { toast.error("Some internal error occurs", toastObj) })
         setFormData1({
             shiftName: '',
             startTime: '',
@@ -90,17 +157,13 @@ function AddForm(props) {
             threshhold_HalfDay: "",
             minHour_FullDay: "",
         })
-    };
-
-    const onSubmit2 = (e) => {
-        e.preventDefault();
-        console.log('Field 2 Data:', formData2);
         setFormData2({
             entryGP: '',
             exitGP: '',
             checkInBefore: '',
             checkInAfter: ''
         })
+        document.getElementById("TSD").innerHTML = ""
     };
 
 
@@ -109,7 +172,6 @@ function AddForm(props) {
         console.log(formData1);
         console.log(formData2);
     }
-    const submitEvents = [onSubmit1, onSubmit2]
 
 
 
@@ -135,9 +197,9 @@ function AddForm(props) {
                         </header>
 
                         <div className={`w-full h-full bg-zinc-700`}>
-                            <div className=" transition-all duration-300 whitespace-nowrap h-full" style={{ transform: `translateX(${translatex}px)` }}>
+                            <form className=" whitespace-nowrap h-full" onSubmit={onSubmit}>
                                 {fields.map((field, index) => (
-                                    <form className={`inline-block w-full elems h-full relative`} key={index} onSubmit={submitEvents[index]} encType="multipart/form-data">
+                                    <div className={` transition-all duration-300 inline-block w-full elems h-full relative`} key={index} style={{ transform: `translateX(${translatex}px)` }}>
                                         <div className={`w-full p-4 grid-cols-1 grid gap-y-3 gap-x-5 pb-16`} >
                                             {
                                                 field.map((items) => (
@@ -145,17 +207,16 @@ function AddForm(props) {
                                                 ))
                                             }
                                         </div>
-                                        <footer className="absolute bottom-0 left-0 w-full bg-zinc-900 flex items-center justify-between py-2 px-2 text-blue-600">
-                                            <h2 className='font-mono text-xl' onClick={showData}>Add new employee</h2>
-                                            <div className="flex gap-2">
-                                                <button type='reset' className={`rounded-md border-2 border-blue-600 px-3 py-1 ${(disabledBtn || field[0].readOnly) && " cursor-not-allowed"}`} disabled={(disabledBtn || field[0].readOnly)}>Reset</button>
-                                                <button type='submit' className={`rounded-md text-zinc-900 font-semibold bg-blue-600 px-3 py-1 ${(disabledBtn || field[0].readOnly) && " cursor-not-allowed"}`} disabled={(disabledBtn || field[0].readOnly)}>Submit</button>
-                                            </div>
-                                        </footer>
-                                    </form>
-
+                                    </div>
                                 ))}
-                            </div>
+                                <footer className="absolute bottom-0 left-0 w-full bg-zinc-900 flex items-center justify-between py-2 px-2 text-blue-600">
+                                    <h2 className='font-mono text-xl' onClick={showData}>Add new employee</h2>
+                                    <div className="flex gap-2">
+                                        <button type='reset' className={`rounded-md border-2 border-blue-600 px-3 py-1 ${(disabledBtn) && " cursor-not-allowed"}`} disabled={(disabledBtn)}>Reset</button>
+                                        <button type='submit' className={`rounded-md text-zinc-900 font-semibold bg-blue-600 px-3 py-1 ${(disabledBtn) && " cursor-not-allowed"}`} disabled={(disabledBtn)}>Submit</button>
+                                    </div>
+                                </footer>
+                            </form>
 
                         </div>
                     </div>

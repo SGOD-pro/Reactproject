@@ -3,17 +3,20 @@ import './App.css'
 import Navbar from './components/Navbar'
 import Header from './components/Header'
 import { Outlet } from 'react-router-dom'
-import {  DataContextProvider } from "./context"
+import { DataContextProvider } from "./context"
 import axios from 'axios'
 import formatISODate from "../src/utils/DateFormater"
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 function App() {
   const [empTableData, setEmpTableData] = useState([])
-
+  const [shiftTableData, setShiftTableData] = useState([])
 
   const pushNewData = (obj) => {
     setEmpTableData(prev => [...prev, obj]);
+  }
+  const pushShiftTableData = (obj) => {
+    setShiftTableData(prev => [...prev, obj]);
   }
   useEffect(() => {
     console.log(empTableData);
@@ -51,10 +54,29 @@ function App() {
         });
       })
   }, [])
+  useEffect(() => {
+    axios.get('/api/timeAtt/getShift')
+      .then(response => {
+        if (!response.data.success) return;
+        setShiftTableData(response.data.data)
+      }).catch(error => {
+        toast.error('Internal problem occurs!', {
+          position: "top-right",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "dark",
+        });
+      })
+
+  }, [])
 
   return (
     <>
-      <DataContextProvider value={{ empTableData, pushNewData }}>
+      <DataContextProvider value={{ empTableData, pushNewData, shiftTableData, pushShiftTableData }}>
         <Navbar />
         <ToastContainer />
 

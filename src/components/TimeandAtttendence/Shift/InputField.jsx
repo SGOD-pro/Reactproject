@@ -1,11 +1,11 @@
 import React from 'react';
 
 function InputField({ params, formData }) {
-    const { name, type, imp, accept, eventChange, readOnly } = params;
+    const { name, type, imp, field, eventChange, readOnly = false ,options} = params;
     return (
-        <div className="rounded-md border-2 relative border-blue-500 w-full flex py-2 text-base ">
-            <label htmlFor={name} className="leading-none absolute top-[-3%] -translate-x-1/2 left-1/2 -translate-y-1/2 px-3 text-xs bg-zinc-700 capitalize">{name.replace(/_/g, ' ')} {imp && <span className='text-red-600 text-sm leading-none'>*</span>}</label>
-            {(type !== 'select' && type !== 'file') && <input
+        <div className="rounded-md border-2 relative border-blue-500 w-full flex py-2 text-base">
+            <label htmlFor={name} className="leading-none absolute top-[-3%] -translate-x-1/2 left-1/2 -translate-y-1/2 px-3 text-xs bg-zinc-700 capitalize">{field} {imp && <span className='text-red-600 text-sm leading-none'>*</span>}</label>
+            {(type !== 'select' && name !== "TSD") && <input
                 className={`rounded-md w-full h-full p-2 outline-none bg-transparent font-thin `}
                 type={type}
                 name={name}
@@ -16,7 +16,13 @@ function InputField({ params, formData }) {
                 readOnly={readOnly}
                 value={formData[name] ? formData[name] : ""}
             />}
-
+            {
+                (name === "TSD") && <label
+                    className={`rounded-md w-full h-full p-2 outline-none bg-transparent font-thin min-h-10`}
+                    name={name}
+                    id={name}
+                ></label>
+            }
             {type === 'select' &&
                 <select
                     name={name}
@@ -32,7 +38,6 @@ function InputField({ params, formData }) {
                     {params.options.map((item) => (
                         <option className='bg-zinc-600 capitalize' value={item} key={item}>{item}</option>
                     ))}
-
                 </select>
             }
         </div>

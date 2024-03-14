@@ -12,7 +12,17 @@ export const DataContext = createContext({
         department: "",
         designation: ""
     }],
-    pushNewData: (obj) => { }
+    pushNewData: (obj) => { },
+    shiftTableData: [{    
+        _id: "",
+        shiftName: "",
+        startTime: "",
+        endTime: "",
+        entryGP: "",
+        exitGP: "",
+        empCount: "",
+    }],
+    pushShiftTableData: (obj) => { }
 })
 
 export const DataContextProvider = DataContext.Provider
