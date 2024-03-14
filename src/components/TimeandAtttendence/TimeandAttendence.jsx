@@ -1,12 +1,15 @@
-import React,{useEffect} from 'react'
+import React, { useEffect } from 'react'
 import Navbar2 from '../Navbar2'
-import { useNavigate, Outlet } from 'react-router-dom'
+import { useNavigate, Outlet, useLocation } from 'react-router-dom'
 function TimeandAttendence() {
   const navigate = useNavigate();
   useEffect(() => {
     navigate('/time-attendance/shift');
   }, [])
-  
+  const location = useLocation();
+  if (location.pathname === '/time-attendance/') {
+    navigate('/time-attendance/shift');
+  }
   return (
     <>
       <Navbar2 to={['/time-attendance/shift', '/time-attendance/holiday', '/time-attendance/leave', '/time-attendance/roster']} name={['shift', 'holiday', 'leave', 'roster']} />

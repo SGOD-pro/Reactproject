@@ -3,13 +3,62 @@ import { IoIosArrowDown, IoIosArrowDropleft, IoIosArrowDropright } from "react-i
 import { CiCirclePlus } from "react-icons/ci";
 import Navbar2 from '../Navbar2'
 import AddEmployee from './AddForm';
-import Table from './Table'
+import Table from '../Table'
+
+import { useEmpData } from '../../context';
 function Employee() {
     const [visibility, setVisibility] = useState('none')
+    const columns = [
+        {
+            field: 'empId',
+            headerName: 'Emp Id',
+            sortable: false,
+            width: 150,
+        },
+        {
+            field: 'first_Name',
+            headerName: 'First name',
+            width: 120,
+        },
+        {
+            field: 'middle_Name',
+            headerName: 'Middle name',
+            width: 120,
+        },
+        {
+            field: 'last_Name',
+            headerName: 'Last Name',
+            width: 120,
+        },
+        {
+            field: 'gender',
+            headerName: 'Gender',
+            width: 120,
+        },
+        {
+            field: 'date_of_joining',
+            headerName: 'D O J',
+            width: 150,
+        },
+        {
+            field: 'department',
+            headerName: 'Department',
+            width: 160,
+        },
+        {
+            field: 'designation',
+            headerName: 'Designation',
+            width: 160,
+        },
+
+    ];
+    const { empTableData } = useEmpData()
+    console.log(empTableData);
+    const rows = empTableData;
     return (
         <>
             <Navbar2 name={['Add Employee']} to={['/employee']} />
-            
+
             <div className='h-full w-full gap-5 pt-2 dark:text-zinc-200 relative'>
                 <header className='flex justify-between items-center'>
                     <div className="flex gap-3">
@@ -29,7 +78,7 @@ function Employee() {
                 </header>
 
                 <div className="w-full px-3 my-8 text-gray-100">
-                    <Table/>
+                    <Table columns={columns} rows={rows} />
                 </div>
 
                 {visibility && <AddEmployee visibility={{ visibility, setVisibility }} />}
