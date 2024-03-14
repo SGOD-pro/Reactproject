@@ -45,8 +45,18 @@ function AddForm(props) {
         "HR Manager",
         "Sales Representative"
     ]
-
-
+    const [i, seti] = useState(0)
+    const activeHandeler = (i) => {
+        // setFormData(null)
+        // setFields(null)
+        const newActive = [...active];
+        for (let index = 0; index < active.length; index++) {
+            newActive[index] = (index === i);
+        }
+        setActive(newActive);
+        seti(i)
+        setFields(allFields[i])
+    }
 
     const readOnlyTrue = (fields) => {
         return fields.map(field => ({ ...field, readOnly: true }));
@@ -66,98 +76,60 @@ function AddForm(props) {
         emailId: "",
         whatsappNo: "",
         addhar: "",
-        pan: ""
+        pan: "",
     });
     const [formData2, setFormData2] = useState({
-        date_of_joining: "",
-        branch: "",
-        department: "",
-        designation: "",
-        default_shift: "",
-        reports_to: "",
-        geo_fence: "",
-        status: "",
-        profile_picture: "",
-        empId: ""
+
     }
     );
     const [formData3, setFormData3] = useState({
-        salary_structure: "",
-        salary_mode: "",
-        branch_name: "",
-        account_no: "",
-        IFSC_code: "",
-        IMCR_code: "",
-        PF_UAN: "",
-        ESIC_NO: "",
-        PF_ACCOUNT_no: "",
-        empId: ""
+
     }
     );
 
-    const handleChange1 = (e) => {
-        console.log(e.target.value);
-        const { name, value, type, files } = e.target;
-        console.log(name, value, type, files);
-        setFormData1(prevState => ({
-            ...prevState,
-            [name]: type === 'file' ? files[0] : value
-        }));
-    };
-    const handleChange2 = (e) => {
-        const { name, value, type, files } = e.target;
-        setFormData2(prevState => ({
-            ...prevState,
-            [name]: type === 'file' ? files[0] : value
-        }));
-    };
-    const handleChange3 = (e) => {
-        const { name, value, type, files } = e.target;
-        setFormData3(prevState => ({
-            ...prevState,
-            [name]: type === 'file' ? files[0] : value
-        }));
-    };
-
     const [field1, setField1] = useState([
-        { name: 'first_Name', type: 'text', imp: true, eventChange: handleChange1, readOnly: false },
-        { name: 'middle_Name', type: 'text', imp: false, eventChange: handleChange1, readOnly: false },
-        { name: 'last_Name', type: 'text', imp: true, eventChange: handleChange1, readOnly: false },
-        { name: 'date_of_birth', type: 'date', imp: true, eventChange: handleChange1, readOnly: false },
-        { name: 'gender', type: 'select', imp: true, options: ['male', 'female', 'others'], eventChange: handleChange1, readOnly: false },
-        { name: 'postal_Code', type: 'number', imp: true, eventChange: handleChange1, readOnly: false },
-        { name: 'address', type: 'text', imp: true, eventChange: handleChange1, readOnly: false },
-        { name: 'emailId', type: 'email', imp: false, eventChange: handleChange1, readOnly: false },
-        { name: 'whatsappNo', type: 'number', imp: true, eventChange: handleChange1, readOnly: false },
-        { name: 'addhar', type: 'file', imp: false, accept: 'application/pdf', eventChange: handleChange1, readOnly: false },
-        { name: 'pan', type: 'file', imp: false, accept: 'application/pdf', eventChange: handleChange1, readOnly: false }
+        { name: 'first_Name', type: 'text', imp: true, readOnly: false },
+        { name: 'middle_Name', type: 'text', imp: false, readOnly: false },
+        { name: 'last_Name', type: 'text', imp: true, readOnly: false },
+        { name: 'date_of_birth', type: 'date', imp: true, readOnly: false },
+        { name: 'gender', type: 'select', imp: true, options: ['male', 'female', 'others'], readOnly: false },
+        { name: 'postal_Code', type: 'number', imp: true, readOnly: false },
+        { name: 'address', type: 'text', imp: true, readOnly: false },
+        { name: 'emailId', type: 'email', imp: false, readOnly: false },
+        { name: 'whatsappNo', type: 'number', imp: true, readOnly: false },
+        { name: 'addhar', type: 'file', imp: false, accept: 'application/pdf', readOnly: false },
+        { name: 'pan', type: 'file', imp: false, accept: 'application/pdf', readOnly: false }
     ]);
     const [field2, setField2] = useState([
-        { name: 'date_of_joining', type: 'date', imp: true, eventChange: handleChange2, readOnly: false },
-        { name: 'branch ', type: 'text', imp: false, eventChange: handleChange2, readOnly: false },
-        { name: 'department', type: 'select', options: departments, imp: true, eventChange: handleChange2, readOnly: false },
-        { name: 'designation', type: 'select', options: designations, imp: true, eventChange: handleChange2, readOnly: false },
-        { name: 'reports_to', type: 'select', imp: false, options: ['null'], eventChange: handleChange2, readOnly: true },
-        { name: 'default_shift', type: 'select', options: ["Morning", "Evening", "Night"], imp: true, eventChange: handleChange2, readOnly: false },
-        { name: 'geo-fence', type: 'text', imp: false, eventChange: handleChange2, readOnly: false },
-        { name: 'status', type: 'text', imp: false, eventChange: handleChange2, readOnly: false },
-        { name: 'profile_picture', type: 'file', imp: false, accept: 'image/*', eventChange: handleChange2, readOnly: false }
+        { name: 'date_of_joining', type: 'date', imp: true, readOnly: false },
+        { name: 'branch ', type: 'text', imp: false, readOnly: false },
+        { name: 'department', type: 'select', options: departments, imp: true, readOnly: false },
+        { name: 'designation', type: 'select', options: designations, imp: true, readOnly: false },
+        { name: 'reports_to', type: 'select', imp: false, options: ['null'], readOnly: true },
+        { name: 'default_shift', type: 'select', options: ["Morning", "Evening", "Night"], imp: true, readOnly: false },
+        { name: 'geo-fence', type: 'text', imp: false, readOnly: false },
+        { name: 'status', type: 'text', imp: false, readOnly: false },
+        { name: 'profile_picture', type: 'file', imp: false, accept: 'image/*', readOnly: false }
     ]);
     const [field3, setField3] = useState([
-        { name: 'salary_structure', type: 'text', imp: true, eventChange: handleChange3, readOnly: false },
-        { name: 'salary_mode', type: 'text', imp: true, eventChange: handleChange3, readOnly: false },
-        { name: 'branch_name', type: 'text', imp: true, eventChange: handleChange3, readOnly: false },
-        { name: 'account_no', type: 'text', imp: true, eventChange: handleChange3, readOnly: false },
-        { name: 'IFSC_code', type: 'text', imp: true, eventChange: handleChange3, readOnly: false },
-        { name: 'IMCR_code', type: 'number', imp: true, eventChange: handleChange3, readOnly: false },
-        { name: 'PF_UAN', type: 'text', imp: true, eventChange: handleChange3, readOnly: false },
-        { name: 'ESIC_NO', type: 'text', imp: true, eventChange: handleChange3, readOnly: false },
-        { name: 'PF_ACCOUNT_no', type: 'number', imp: true, eventChange: handleChange3, readOnly: false }
+        { name: 'salary_structure', type: 'text', imp: true, readOnly: false },
+        { name: 'salary_mode', type: 'text', imp: true, readOnly: false },
+        { name: 'branch_name', type: 'text', imp: true, readOnly: false },
+        { name: 'account_no', type: 'text', imp: true, readOnly: false },
+        { name: 'IFSC_code', type: 'text', imp: true, readOnly: false },
+        { name: 'IMCR_code', type: 'number', imp: true, readOnly: false },
+        { name: 'PF_UAN', type: 'text', imp: true, readOnly: false },
+        { name: 'ESIC_NO', type: 'text', imp: true, readOnly: false },
+        { name: 'PF_ACCOUNT_no', type: 'number', imp: true, readOnly: false }
     ]);
     const allFields = [field1, field2, field3]
     const [fields, setFields] = useState(allFields[0])
 
-    const allFormData = [formData1, formData2, formData3]
+    const allFormData = [
+        { formData: formData1, setFormData: setFormData1 },
+        { formData: formData2, setFormData: setFormData2 },
+        { formData: formData3, setFormData: setFormData3 }
+    ]
     const [formData, setFormData] = useState(allFormData[0])
 
     const [tableData, setTableData] = useState({})
@@ -213,20 +185,7 @@ function AddForm(props) {
             setField3(updatedField)
         }
     }
-    const [index, setIndex] = useState(0)
 
-    const activeHandeler = (i) => {
-        // setFormData(null)
-        // setFields(null)
-        const newActive = [...active];
-        for (let index = 0; index < active.length; index++) {
-            newActive[index] = (index === i);
-        }
-        setActive(newActive);
-        setIndex(i)
-        setFormData(allFormData[i])
-        setFields(allFields[i])
-    }
     const onSubmit = async (api) => {
         const empId = localStorage.getItem("empId")
         const doj = localStorage.getItem("date_of_joining")
@@ -237,11 +196,13 @@ function AddForm(props) {
                     toast.warn("Emp Id not found.", toasterObj);
                     return;
                 }
+
                 if (!formData2['department'] || !formData2['designation'] || !formData2['default_shift']) {
                     toast.warn("Some field is missing", toasterObj);
                     return;
                 }
                 data = { ...formData2, empId }
+                console.log(data);
                 break;
             case "salary":
                 if (!doj) {
@@ -249,13 +210,23 @@ function AddForm(props) {
                     return;
                 }
                 data = { ...formData3, empId }
+                console.log(data);
                 break;
             default:
                 if (!formData1['gender'] || formData1['gender'] === "") {
                     toast.error("Gender is required", toasterObj);
                     return;
                 }
+                if (formData1['postal_Code'].length !== 6) {
+                    toast.warn("Invalid postal code..", toasterObj);
+                    return;
+                }
+                if (formData1['whatsappNo'].length !== 10) {
+                    toast.warn("Invalid whatsapp number..", toasterObj);
+                    return;
+                }
                 data = formData1
+                console.log(data);
                 break;
         }
 
@@ -330,6 +301,9 @@ function AddForm(props) {
         }
 
     }, [])
+    useEffect(() => {
+    }, [formData])
+
     return (
         <>
             <div className=" absolute top-0 left-0 w-full h-full rounded-lg flex items-center justify-center px-2 bg-[#7474740c] z-50" style={{ display: visibility }}>
@@ -352,12 +326,12 @@ function AddForm(props) {
                         <div className={`w-full h-full bg-zinc-700`}>
                             <form className=" whitespace-nowrap h-full" onSubmit={(e) => {
                                 e.preventDefault();
-                                onSubmit()
+                                onSubmit(submitApi[i])
                             }}>
                                 <div className={`w-full p-4 grid-cols-2 grid gap-y-3 gap-x-5 pb-16`} >
                                     {
                                         fields.map((items) => (
-                                            <InputField params={items} key={items.name} formData={formData} />
+                                            <InputField params={items} key={items.name} state={{ arr: allFormData, index: i }} />
                                         ))
                                     }
                                 </div>

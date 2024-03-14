@@ -25,16 +25,16 @@ function App() {
   useEffect(() => {
     axios.get("/api/employee/table-deitails")
       .then(response => {
-        toast.success(response.data.message, {
-          position: "top-right",
-          autoClose: 5000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-          theme: "dark",
-        });
+        // toast.success(response.data.message, {
+        //   position: "top-right",
+        //   autoClose: 5000,
+        //   hideProgressBar: false,
+        //   closeOnClick: true,
+        //   pauseOnHover: true,
+        //   draggable: true,
+        //   progress: undefined,
+        //   theme: "dark",
+        // });
         if (!response.data.success) return;
         const data = response.data.data
         data.map(item => (item.date_of_joining ? (item.date_of_joining = formatISODate(item.date_of_joining)) : ""))
@@ -42,16 +42,16 @@ function App() {
         setEmpTableData(null)
         setEmpTableData(response.data.data)
       }).catch(err => {
-        toast.error('Internal problem occurs!', {
-          position: "top-right",
-          autoClose: 5000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-          theme: "dark",
-        });
+        // toast.error('Internal problem occurs!', {
+        //   position: "top-right",
+        //   autoClose: 5000,
+        //   hideProgressBar: false,
+        //   closeOnClick: true,
+        //   pauseOnHover: true,
+        //   draggable: true,
+        //   progress: undefined,
+        //   theme: "dark",
+        // });
       })
   }, [])
   useEffect(() => {
@@ -60,16 +60,16 @@ function App() {
         if (!response.data.success) return;
         setShiftTableData(response.data.data)
       }).catch(error => {
-        toast.error('Internal problem occurs!', {
-          position: "top-right",
-          autoClose: 5000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-          theme: "dark",
-        });
+        // toast.error('Internal problem occurs!', {
+        //   position: "top-right",
+        //   autoClose: 5000,
+        //   hideProgressBar: false,
+        //   closeOnClick: true,
+        //   pauseOnHover: true,
+        //   draggable: true,
+        //   progress: undefined,
+        //   theme: "dark",
+        // });
       })
 
   }, [])
