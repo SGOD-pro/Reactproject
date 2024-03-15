@@ -79,9 +79,29 @@ function AddForm(props) {
             })
         }
     }
+    function getTimeDifference(time1, time2) {
+        function timeToMinutes(timeString) {
+            const [hours, minutes] = timeString.split(":");
+            return parseInt(hours, 10) * 60 + parseInt(minutes, 10);
+        }
 
-    const onSubmit = async (api) => {
+        const time1Minutes = timeToMinutes(time1);
+        const time2Minutes = timeToMinutes(time2);
+
+        const differenceMinutes = Math.abs(time1Minutes - time2Minutes);
+
+        const hours = Math.floor(differenceMinutes / 60);
+        const minutes = differenceMinutes % 60;
+
+        return { hours, minutes };
+    }
+
+    const onSubmit = async () => {
         console.log(formData);
+
+        const { hours, minutes } = getTimeDifference(formData.endTime, formData.startTime);
+        console.log(hours, minutes);
+        return;
         if (formData['shiftName'].trim() === '') {
             toast.warn("Shieft Name required.", toasterObj)
             return
