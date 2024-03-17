@@ -1,7 +1,7 @@
 import { createContext, useContext } from "react";
 
 export const DataContext = createContext({
-    empTableData: [{    
+    empTableData: [{
         _id: "",
         first_Name: "",
         middle_Name: "",
@@ -13,7 +13,9 @@ export const DataContext = createContext({
         designation: ""
     }],
     pushNewData: (obj) => { },
-    shiftTableData: [{    
+    popEmp: (obj) => { },
+
+    shiftTableData: [{
         _id: "",
         shiftName: "",
         startTime: "",
@@ -22,7 +24,9 @@ export const DataContext = createContext({
         exitGP: "",
         empCount: "",
     }],
-    pushShiftTableData: (obj) => { }
+    pushShiftTableData: (obj) => { },
+    popShiftTableData: (id) => { },
+    fiterTableData: (obj) => { }
 })
 
 export const DataContextProvider = DataContext.Provider

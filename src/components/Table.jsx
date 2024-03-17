@@ -27,6 +27,12 @@ export default function DataGridDemo({ columns, rows }) {
                     '& .MuiSvgIcon-root': {
                         color: '#f4f4f4',
                     },
+                    '$ .MuiDataGrid-cell': {
+                        textAlign: "left"
+                    },
+                    '$ .MuiDataGrid-cellContent':{
+                        textTransform: 'capitalize'
+                    },
                     width: "100%",
                     color: "#f4f4f4"
                 }}

@@ -6,6 +6,7 @@ import { ApiResponce } from "../utils/ApiResponce.js";
 import { Joining } from "../models/joining.js";
 import { Salary } from "../models/salary.model.js";
 import { Overview } from "../models/overview.model.js";
+import mongoose from "mongoose";
 
 
 const EmployeeRegsiter = asyncHandler(async (req, res) => {
@@ -18,8 +19,6 @@ const EmployeeRegsiter = asyncHandler(async (req, res) => {
                 throw new ApiErrors(400, 'Some required fields are empty.')
             }
         });
-
-        console.log(req.files);
         const empId = generateUniqueId()
         const addharPath = req.files?.addhar[0]?.path;
         const panPath = req.files?.pan[0]?.path;
@@ -126,7 +125,6 @@ const setSalary = asyncHandler(async (req, res) => {
     try {
         const { salary_structure, salary_mode, branch_name, account_no, IFSC_code, IMCR_code, PF_UAN, ESIC_NO, PF_ACCOUNT_no, empId } = req.body
         // const empId = req.params.empId
-        console.log(req.body);
 
         if ([salary_structure, salary_mode, branch_name, account_no, IFSC_code, IMCR_code, PF_UAN, ESIC_NO, PF_ACCOUNT_no, empId].some(elem => (!elem || elem?.trim() === ""))) {
             throw new ApiErrors(400, "Fill up properly.")
@@ -244,4 +242,12 @@ const fetchEmployeRecords = asyncHandler(async (req, res) => {
     }
 })
 
-export { EmployeeRegsiter, setSalary, setJoining, getJoining, getOverview, fetchEmployeRecords }
+const popEmp = asyncHandler(async (req, res) => {
+    const { id } = req.query
+    const a = await Overview.findByIdAndDelete(id)
+    const b = await Salary.findOneAndDelete({ empId: a.empId })
+    const c = await Joining.findOneAndDelete({ empId: a.empId })
+    console.log(a, b, c);
+    res.status(200).json(200, {}, "EMPLOYEE DELETED")
+})
+export { EmployeeRegsiter, setSalary, setJoining, getJoining, getOverview, fetchEmployeRecords, popEmp }

@@ -3,14 +3,14 @@ import { IoIosCloseCircleOutline } from "react-icons/io";
 import InputField from './InputField';
 import axios from 'axios';
 import { toast } from 'react-toastify';
+import { useEmpData } from '../../context';
 function AddForm(props) {
     const [disabledBtn, setDisabledBtn] = useState(false)
     const { visibility, setVisibility } = props.visibility
     const [fomSubmitted, setFormSubmitted] = useState(false)
     const fieldButton = ['Overview', 'Joining', 'salary']
     const [active, setActive] = useState([true, false, false])
-
-
+    const { pushNewData } = useEmpData()
     const toasterObj = {
         position: "top-right",
         autoClose: 5000,
@@ -46,9 +46,8 @@ function AddForm(props) {
         "Sales Representative"
     ]
     const [i, seti] = useState(0)
+    const [empId, setEmpId] = useState(null)
     const activeHandeler = (i) => {
-        // setFormData(null)
-        // setFields(null)
         const newActive = [...active];
         for (let index = 0; index < active.length; index++) {
             newActive[index] = (index === i);
@@ -83,7 +82,6 @@ function AddForm(props) {
     }
     );
     const [formData3, setFormData3] = useState({
-
     }
     );
 
@@ -97,8 +95,8 @@ function AddForm(props) {
         { name: 'address', type: 'text', imp: true, readOnly: false },
         { name: 'emailId', type: 'email', imp: false, readOnly: false },
         { name: 'whatsappNo', type: 'number', imp: true, readOnly: false },
-        { name: 'addhar', type: 'file', imp: false, accept: 'application/pdf', readOnly: false },
-        { name: 'pan', type: 'file', imp: false, accept: 'application/pdf', readOnly: false }
+        { name: 'addhar', type: 'file', imp: false, accept: 'image/*', readOnly: false },
+        { name: 'pan', type: 'file', imp: false, accept: 'image/*', readOnly: false }
     ]);
     const [field2, setField2] = useState([
         { name: 'date_of_joining', type: 'date', imp: true, readOnly: false },
@@ -190,6 +188,8 @@ function AddForm(props) {
         const empId = localStorage.getItem("empId")
         const doj = localStorage.getItem("date_of_joining")
         let data = null;
+        console.log(formData1);
+
         switch (api) {
             case "joining":
                 if (!empId) {
@@ -225,6 +225,10 @@ function AddForm(props) {
                     toast.warn("Invalid whatsapp number..", toasterObj);
                     return;
                 }
+                if (/\d/.test(formData1['address'])) {
+                    toast.warn("Invalid adress..", toasterObj);
+                    return;
+                }
                 data = formData1
                 console.log(data);
                 break;
@@ -245,6 +249,7 @@ function AddForm(props) {
                     const updatedField = readOnlyTrue(field1);
                     setField1(updatedField);
                     localStorage.setItem("empId", responseData.data.empId);
+                    setEmpId(responseData.data.empId)
                 }
                 else if (api === "joining") {
                     setTableData(prev => ({ ...prev, ...responseData.data }))
@@ -256,18 +261,19 @@ function AddForm(props) {
                     pushNewData(tableData);
                     localStorage.removeItem("empId");
                     localStorage.removeItem("date_of_joining");
+                    setEmpId(null)
                     resetForm()
                 }
                 toast.success(responseData.message, toasterObj);
-            }).catch(err => { toast.error("Internal server error.", toasterObj); setDisabledBtn(false); })
+            })
     }
 
     useEffect(() => {
         const empId = localStorage.getItem("empId")
         if (empId) {
+            setEmpId(empId)
             axios.get(`/api/employee/getOverview?empId=${empId}`)
                 .then(responce => {
-                    console.log(responce.data);
                     const updatedField = readOnlyTrue(field1)
                     setField1(updatedField)
                     if (!responce.data.success) {
@@ -327,7 +333,8 @@ function AddForm(props) {
                             <form className=" whitespace-nowrap h-full" onSubmit={(e) => {
                                 e.preventDefault();
                                 onSubmit(submitApi[i])
-                            }}>
+                            }} encType="multipart/form-data">
+                                <span className='text-red-600 px-4'>{empId && empId}</span>
                                 <div className={`w-full p-4 grid-cols-2 grid gap-y-3 gap-x-5 pb-16`} >
                                     {
                                         fields.map((items) => (

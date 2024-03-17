@@ -2,6 +2,7 @@ import React, { useEffect, useState, useRef } from 'react'
 import { IoIosCloseCircleOutline } from "react-icons/io";
 import InputField from './InputField';
 import axios from 'axios';
+import { useEmpData } from '../../../context';
 import { toast } from 'react-toastify';
 function AddForm(props) {
 
@@ -10,7 +11,7 @@ function AddForm(props) {
     const { visibility, setVisibility } = props.visibility
     const fieldButton = ['new', 'other']
     const [active, setActive] = useState([true, false, false])
-
+    const { pushShiftTableData } = useEmpData()
 
     const toasterObj = {
         position: "top-right",
@@ -50,76 +51,81 @@ function AddForm(props) {
         { name: 'shiftName', type: 'select', options: ["Morning", "Evening", "Night"], imp: true, field: 'shift name', placeHolder: "" },
         { name: 'startTime', type: 'time', imp: true, field: 'start time', placeHolder: "" },
         { name: 'endTime', type: 'time', imp: true, field: 'end time', placeHolder: "" },
-        { name: 'TSD', type: 'time', field: 'total shift duration', placeHolder: "", readOnly: true },
-        { name: 'threshhold_HalfDay', type: 'number', field: 'threshold for half day', placeHolder: "" },
-        { name: 'minHour_FullDay', type: 'number', field: 'min. hour for full day', placeHolder: "" }
+        { name: 'TSD', type: 'time', field: 'total shift duration', placeHolder: "Hours", readOnly: true },
+        { name: 'threshhold_HalfDay', type: 'number', field: 'threshold for half day', placeHolder: "Hours" },
+        { name: 'minHour_FullDay', type: 'number', field: 'min. hour for full day', placeHolder: "Hours" }
     ]);
 
     const [field2, setField2] = useState([
-        { name: 'entryGP', type: 'number', field: 'entry GP', placeHolder: "", imp: false },
-        { name: 'exitGP', type: 'number', field: 'exit GP', placeHolder: "", imp: false },
-        { name: 'checkInBefore', type: 'number', field: 'check in before shift start time', placeHolder: "", extra: "", imp: false },
-        { name: 'checkInAfter', type: 'number', field: 'check in after shift end time', placeHolder: "", extra: "", imp: false }
+        { name: 'entryGP', type: 'number', field: 'entry GP', placeHolder: "Minutes", imp: false },
+        { name: 'exitGP', type: 'number', field: 'exit GP', placeHolder: "Minutes", imp: false },
+        { name: 'checkInBefore', type: 'number', field: 'check in before shift start time', placeHolder: "Minutes", extra: "", imp: false },
+        { name: 'checkInAfter', type: 'number', field: 'check in after shift end time', placeHolder: "Minutes", extra: "", imp: false }
     ]);
     const allFields = [field1, field2]
     const [fields, setFields] = useState(allFields[0])
     function resetForm() {
-        if (fomSubmitted) {
-            setFormData({
-                shiftName: "",
-                startTime: "",
-                endTime: "",
-                TSD: "",
-                threshhold_HalfDay: "",
-                minHour_FullDay: "",
-                entryGP: "",
-                exitGP: "",
-                checkInBefore: "",
-                checkInAfter: "",
-            })
-        }
+        setFormData({
+            shiftName: "",
+            startTime: "",
+            endTime: "",
+            TSD: "",
+            threshhold_HalfDay: "",
+            minHour_FullDay: "",
+            entryGP: "",
+            exitGP: "",
+            checkInBefore: "",
+            checkInAfter: "",
+        })
     }
-    function getTimeDifference(time1, time2) {
-        function timeToMinutes(timeString) {
-            const [hours, minutes] = timeString.split(":");
-            return parseInt(hours, 10) * 60 + parseInt(minutes, 10);
+    function differenceTime(time1, time2) {
+        const [hours1, minutes1] = time1.split(':').map(Number);
+        const [hours2, minutes2] = time2.split(':').map(Number);
+        console.log(time1, time2);
+        let diffHours = hours2 - hours1;
+        let diffMinutes = minutes2 - minutes1;
+
+        if (diffHours < 0 || (diffHours === 0 && diffMinutes < 0)) {
+            diffHours += 24;
         }
 
-        const time1Minutes = timeToMinutes(time1);
-        const time2Minutes = timeToMinutes(time2);
+        if (diffMinutes < 0) {
+            diffHours--;
+            diffMinutes += 60;
+        }
 
-        const differenceMinutes = Math.abs(time1Minutes - time2Minutes);
-
-        const hours = Math.floor(differenceMinutes / 60);
-        const minutes = differenceMinutes % 60;
-
-        return { hours, minutes };
+        return { diffHours, diffMinutes };
     }
 
     const onSubmit = async () => {
         console.log(formData);
-
-        const { hours, minutes } = getTimeDifference(formData.endTime, formData.startTime);
-        console.log(hours, minutes);
-        return;
         if (formData['shiftName'].trim() === '') {
             toast.warn("Shieft Name required.", toasterObj)
             return
         }
         setDisabledBtn(true);
-        axios.post(`/api/timeAtt/getShift`, formData)
+        axios.post(`/api/timeAtt/setShift`, formData)
             .then((response) => {
                 const responseData = response.data;
+                console.log(responseData);
                 setDisabledBtn(false);
                 if (!responseData.success) {
                     toast.error(responseData.message, toasterObj);
                     return;
                 }
-                pushNewData(responseData.data);
+                pushShiftTableData(responseData.data);
                 resetForm();
                 toast.success(responseData.message, toasterObj);
-            }).catch(err => { toast.error("Internal server error.", toasterObj); setDisabledBtn(false); })
+            }).catch(error => {setDisabledBtn(false); toast.error("Internal server error.", toastObj) })
     }
+    useEffect(() => {
+        if (formData.startTime !== '', formData.endTime !== "") {
+            const { diffHours, diffMinutes } = differenceTime(formData.startTime, formData.endTime);
+            const TSD = `${diffHours < 10 ? `0${diffHours}` : diffHours}:${diffMinutes < 10 ? `0${diffMinutes}` : diffMinutes}`
+            setFormData(prev => ({ ...prev, TSD }))
+            document.getElementById("TSD").innerHTML = TSD
+        }
+    }, [formData.startTime, formData.endTime])
 
 
     return (

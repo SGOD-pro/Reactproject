@@ -5,9 +5,20 @@ import Navbar2 from '../Navbar2'
 import AddEmployee from './AddForm';
 import Table from '../Table'
 
+import { MdDeleteOutline } from "react-icons/md";
 import { useEmpData } from '../../context';
+import axios from 'axios';
 function Employee() {
+    const { empTableData, popEmp } = useEmpData()
+
     const [visibility, setVisibility] = useState('none')
+    const popEmployee = (id) => {
+        axios.get(`/api/employee/popEmp?id=${id}`)
+            .then((response) => {
+                popEmp(id)
+                console.log(response);
+            })
+    }
     const columns = [
         {
             field: 'empId',
@@ -50,9 +61,15 @@ function Employee() {
             headerName: 'Designation',
             width: 160,
         },
+        {
+            field: '',
+            headerName: 'Actions',
+            renderCell: (params) => (
+                <button className='text-red-600 rounded-md text-3xl flex items-center' onClick={() => popEmployee(params.row.id)}><MdDeleteOutline /></button>
+            ),
+        },
 
     ];
-    const { empTableData } = useEmpData()
     console.log(empTableData);
     const rows = empTableData;
     return (
