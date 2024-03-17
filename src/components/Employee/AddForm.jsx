@@ -127,8 +127,6 @@ function AddForm(props) {
         { formData: formData2, setFormData: setFormData2 },
         { formData: formData3, setFormData: setFormData3 }
     ]
-    const [formData, setFormData] = useState(allFormData[0])
-
     const [tableData, setTableData] = useState({})
 
     const submitApi = ["register", "joining", "salary"]
