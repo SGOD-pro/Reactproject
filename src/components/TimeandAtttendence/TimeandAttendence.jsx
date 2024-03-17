@@ -7,9 +7,9 @@ function TimeandAttendence() {
     navigate('/time-attendance/shift');
   }, [])
   const location = useLocation();
-  if (location.pathname === '/time-attendance/') {
-    navigate('/time-attendance/shift');
-  }
+  // if (location.pathname === '/time-attendance/') {
+  //   navigate('/time-attendance/shift');
+  // }
   return (
     <>
       <Navbar2 to={['/time-attendance/shift', '/time-attendance/holiday', '/time-attendance/leave', '/time-attendance/roster']} name={['shift', 'holiday', 'leave', 'roster']} />

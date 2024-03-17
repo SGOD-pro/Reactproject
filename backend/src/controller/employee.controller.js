@@ -6,19 +6,20 @@ import { ApiResponce } from "../utils/ApiResponce.js";
 import { Joining } from "../models/joining.js";
 import { Salary } from "../models/salary.model.js";
 import { Overview } from "../models/overview.model.js";
-import mongoose from "mongoose";
-
 
 const EmployeeRegsiter = asyncHandler(async (req, res) => {
 
     try {
         const { first_Name, middle_Name, last_Name, date_of_birth, gender, postal_Code, address, email, whatsappNo } = req.body
         console.log(req.body);
+
+
         [first_Name, last_Name, date_of_birth, gender, postal_Code, address, whatsappNo].forEach(element => {
             if (!element || element === '') {
                 throw new ApiErrors(400, 'Some required fields are empty.')
             }
         });
+
         const empId = generateUniqueId()
         const addharPath = req.files?.addhar[0]?.path;
         const panPath = req.files?.pan[0]?.path;

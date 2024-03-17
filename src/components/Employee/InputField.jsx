@@ -36,7 +36,7 @@ function InputField({ params, state }) {
                         accept={`${accept && accept}`}
                         onChange={change}
                         required={imp} disabled={readOnly} />
-                    <p htmlFor="" className=' absolute top-1/2 -translate-y-1/2 px-2 whitespace-nowrap overflow-hidden text-ellipsis w-full text'>{formData[name].name}</p>
+                    <p htmlFor="" className=' absolute top-1/2 -translate-y-1/2 px-2 whitespace-nowrap overflow-hidden text-ellipsis w-full text'>{formData[name]?.name}</p>
                     <label htmlFor={name} className=' absolute rounded-full text-xs  bg-zinc-600 px-2 top-4 -translate-y-1/2 right-0'>Choose File</label>
                 </>
             }

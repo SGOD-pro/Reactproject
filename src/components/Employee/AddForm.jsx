@@ -7,7 +7,6 @@ import { useEmpData } from '../../context';
 function AddForm(props) {
     const [disabledBtn, setDisabledBtn] = useState(false)
     const { visibility, setVisibility } = props.visibility
-    const [fomSubmitted, setFormSubmitted] = useState(false)
     const fieldButton = ['Overview', 'Joining', 'salary']
     const [active, setActive] = useState([true, false, false])
     const { pushNewData } = useEmpData()
@@ -135,58 +134,55 @@ function AddForm(props) {
     const submitApi = ["register", "joining", "salary"]
 
     function resetForm() {
-        if (fomSubmitted) {
-            setFormData3({
-                salary_structure: "",
-                salary_mode: "",
-                branch_name: "",
-                account_no: "",
-                IFSC_code: "",
-                IMCR_code: "",
-                PF_UAN: "",
-                ESIC_NO: "",
-                PF_ACCOUNT_no: "",
-                empId: ""
-            })
-            setFormData2({
-                date_of_joining: "",
-                branch: "",
-                department: "",
-                designation: "",
-                default_shift: "",
-                reports_to: "",
-                geo_fence: "",
-                status: "",
-                profile_picture: "",
-                empId: ""
-            })
-            setFormData1({
-                first_Name: "",
-                middle_Name: "",
-                last_Name: "",
-                date_of_birth: "",
-                gender: "",
-                postal_Code: "",
-                address: "",
-                emailId: "",
-                whatsappNo: "",
-                addhar: "",
-                pan: ''
-            })
-            let updatedField = readOnlyFalse(field1)
-            setField1(updatedField)
+        setFormData3({
+            salary_structure: "",
+            salary_mode: "",
+            branch_name: "",
+            account_no: "",
+            IFSC_code: "",
+            IMCR_code: "",
+            PF_UAN: "",
+            ESIC_NO: "",
+            PF_ACCOUNT_no: "",
+            empId: ""
+        })
+        setFormData2({
+            date_of_joining: "",
+            branch: "",
+            department: "",
+            designation: "",
+            default_shift: "",
+            reports_to: "",
+            geo_fence: "",
+            status: "",
+            profile_picture: "",
+            empId: ""
+        })
+        setFormData1({
+            first_Name: "",
+            middle_Name: "",
+            last_Name: "",
+            date_of_birth: "",
+            gender: "",
+            postal_Code: "",
+            address: "",
+            emailId: "",
+            whatsappNo: "",
+            addhar: "",
+            pan: ''
+        })
+        let updatedField = readOnlyFalse(field1)
+        setField1(updatedField)
 
-            updatedField = readOnlyFalse(field2)
-            setField2(updatedField)
+        updatedField = readOnlyFalse(field2)
+        setField2(updatedField)
 
-            updatedField = readOnlyFalse(field3)
-            setField3(updatedField)
-        }
+        updatedField = readOnlyFalse(field3)
+        setField3(updatedField)
     }
-
     const onSubmit = async (api) => {
         const empId = localStorage.getItem("empId")
-        const doj = localStorage.getItem("date_of_joining")
+        const doj = localStorage.getItem("doj")
         let data = null;
         console.log(formData1);
 
@@ -238,24 +234,28 @@ function AddForm(props) {
         axios.post(`/api/employee/${api}`, data)
             .then((response) => {
                 const responseData = response.data;
+                console.log(responseData);
                 setDisabledBtn(false);
                 if (!responseData.success) {
                     toast.error(responseData.message, toasterObj);
                     return;
                 }
 
-                if (api === "employee") {
+                if (api === "register") {
                     setTableData(responseData.data)
                     const updatedField = readOnlyTrue(field1);
                     setField1(updatedField);
                     localStorage.setItem("empId", responseData.data.empId);
                     setEmpId(responseData.data.empId)
+                    activeHandeler(1)
                 }
                 else if (api === "joining") {
                     setTableData(prev => ({ ...prev, ...responseData.data }))
                     const updatedField = readOnlyTrue(field2);
                     setField2(updatedField);
                     localStorage.setItem("doj", responseData.data.date_of_joining);
+                    activeHandeler(2)
+                    console.log(tableData);
                 }
                 else {
                     pushNewData(tableData);
@@ -263,6 +263,8 @@ function AddForm(props) {
                     localStorage.removeItem("date_of_joining");
                     setEmpId(null)
                     resetForm()
+                    activeHandeler(0)
+
                 }
                 toast.success(responseData.message, toasterObj);
             })
@@ -277,10 +279,7 @@ function AddForm(props) {
                     const updatedField = readOnlyTrue(field1)
                     setField1(updatedField)
                     if (!responce.data.success) {
-                        if (!empId) {
-                            toast.error(responce.data.message, toasterObj);
-                            return;
-                        }
+                        toast.error(responce.data.message, toasterObj);
                         return;
                     }
                     const x = responce.data.data
@@ -307,8 +306,7 @@ function AddForm(props) {
         }
 
     }, [])
-    useEffect(() => {
-    }, [formData])
+
 
     return (
         <>

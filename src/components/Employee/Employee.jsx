@@ -70,8 +70,7 @@ function Employee() {
         },
 
     ];
-    console.log(empTableData);
-    const rows = empTableData;
+    const rows=empTableData
     return (
         <>
             <Navbar2 name={['Add Employee']} to={['/employee']} />
@@ -98,7 +97,7 @@ function Employee() {
                     <Table columns={columns} rows={rows} />
                 </div>
 
-                {visibility && <AddEmployee visibility={{ visibility, setVisibility }} />}
+                {visibility && <AddEmployee visibility={{ visibility, setVisibility }}/>}
             </div>
         </>
     )
