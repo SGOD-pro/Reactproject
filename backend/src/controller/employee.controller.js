@@ -169,7 +169,7 @@ const getJoining = asyncHandler(async (req, res) => {
         if (!emp) {
             throw new ApiErrors(404, "Employee not found");
         }
-        const date = new Date(dateString);
+        const date = new Date(emp.date_of_joining);
         const options = { year: 'numeric', month: 'long', day: 'numeric' };
         const formattedDate = date.toLocaleDateString('en-US', options);
         emp.date_of_joining = formattedDate

@@ -265,7 +265,7 @@ function AddForm(props) {
 
                 }
                 toast.success(responseData.message, toasterObj);
-            })
+            }).catch(err => { console.log(err); toast.error("Internal server error.", toasterObj);})
     }
 
     useEffect(() => {
@@ -274,37 +274,39 @@ function AddForm(props) {
             setEmpId(empId)
             axios.get(`/api/employee/getOverview?empId=${empId}`)
                 .then(responce => {
-                    const updatedField = readOnlyTrue(field1)
-                    setField1(updatedField)
                     if (!responce.data.success) {
                         toast.error(responce.data.message, toasterObj);
                         return;
                     }
+                    setField1(prev => prev.map(item => ({ ...item, readOnly: true })))
+                    console.log(field1);
                     const x = responce.data.data
                     console.log(x);
                     setFormData1(null)
                     setFormData1(x)
+                    setTableData(responce.data.data)
                 }).catch(err => { console.log(err); })
         }
-        const doj = localStorage.getItem("date_of_joining")
+    }, [])
+
+    useEffect(() => {
+        const doj = localStorage.getItem("doj")
+        const empId = localStorage.getItem("empId")
         if (doj) {
-            const updatedField = readOnlyTrue(field2)
-            console.log(empId);
-            setField2(updatedField)
             axios.get(`/api/employee/getJoinning?empId=${empId}`).then(responce => {
                 if (!responce.data.success) {
                     toast.error(responseData.message, toasterObj);
                     return;
                 }
+                setField2(prev => prev.map(item => ({ ...item, readOnly: true })))
                 const x = responce.data.data
-                console.log(formData2);
                 setFormData2(null)
                 setFormData2(x)
+
+                setTableData(prev => ({ ...prev, ...responce.data.data }))
             }).catch(err => { console.log(err); })
         }
-
     }, [])
-
 
     return (
         <>
@@ -341,8 +343,8 @@ function AddForm(props) {
                                 <footer className="absolute bottom-0 left-0 w-full bg-zinc-900 flex items-center justify-between py-2 px-2 text-blue-600">
                                     <h2 className='font-mono text-xl'>Add new employee</h2>
                                     <div className="flex gap-2">
-                                        <button type='reset' className={`rounded-md border-2 border-blue-600 px-3 py-1 ${(disabledBtn) && " cursor-not-allowed"}`} disabled={(disabledBtn)}>Reset</button>
-                                        <button type='submit' className={`rounded-md text-zinc-900 font-semibold bg-blue-600 px-3 py-1 ${(disabledBtn) && " cursor-not-allowed"}`} disabled={(disabledBtn)}>Submit</button>
+                                        <button type='reset' className={`rounded-md border-2 border-blue-600 px-3 py-1 ${(allFields[i][0].readOnly || disabledBtn) && " cursor-not-allowed "}`} disabled={(allFields[i][0].readOnly || disabledBtn)}>Reset</button>
+                                        <button type='submit' className={`rounded-md text-zinc-900 font-semibold bg-blue-600 px-3 py-1 ${(allFields[i][0].readOnly || disabledBtn) ? " cursor-not-allowed " : ""}`} disabled={(allFields[i][0].readOnly || disabledBtn)}>Submit</button>
                                     </div>
                                 </footer>
                             </form>
